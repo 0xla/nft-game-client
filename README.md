@@ -1,6 +1,6 @@
-This is a mini turn-based NFT browser game! Feel free to check it out here : https://nft-game-client-pro.vercel.app !
+### This is a mini turn-based NFT browser game! Feel free to check it out here : https://nft-game-client-pro.vercel.app !
 
-Tech Stack Used:-
+## Tech Stack Used:-
 
     1) Next.js.
     2) Tailwind CSS for Styling.
