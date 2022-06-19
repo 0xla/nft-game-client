@@ -130,7 +130,7 @@ const renderContent = () => {
 
   useEffect(() => {
     const fetchNFTMetadata = async () => {
-        
+      // 
       console.log("Checking for character nft on address", currentAccount);
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
