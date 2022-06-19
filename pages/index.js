@@ -1,5 +1,5 @@
 import Image from 'next/image'
-
+import Link from 'next/link'
 
 const LandingPage = () => {
   // bg-[url('https://homyshirt.com/9847-large_default/sangoku-t-shirt-vs-marvel-comics-white-sublimation.jpg')]
@@ -12,9 +12,9 @@ const LandingPage = () => {
               src="https://homyshirt.com/9847-large_default/sangoku-t-shirt-vs-marvel-comics-white-sublimation.jpg"
               className="h-auto lg:w-[55vw] w-[100vw]"
             />
-            <a href="/main">
+            <Link href="/main">
               <button className="btn btn-wide text-white">Play Game</button>
-            </a>
+            </Link>
             </div>
   );
 }
