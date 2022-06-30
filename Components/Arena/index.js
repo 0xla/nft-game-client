@@ -131,9 +131,9 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             console.log('Ethereum object not found');
         }
     }, []);
-    useEffect( () => {
-        playBattleSound();
-    });
+    // useEffect( () => {
+    //     playBattleSound();
+    // });
     useEffect( () => {
         const fetchBoss = async () => {
             const bossTxn = await gameContract.getBigBoss();
