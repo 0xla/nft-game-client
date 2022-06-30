@@ -20,8 +20,6 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(false);
   // const router = useRouter()
 
-
-
   // Actions
  
   
@@ -59,7 +57,7 @@ const Main = () => {
   const connectWalletAction = async () => {
     try {
       const { ethereum } = window;
-
+      alert("Sound effects over the next pages");
       if (!ethereum) {
         alert('Get MetaMask!');
         return;

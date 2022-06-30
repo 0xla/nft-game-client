@@ -132,7 +132,6 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         }
     }, []);
     useEffect( () => {
-        alert("Sound effects over the next pages!")
         playBattleSound();
     });
     useEffect( () => {
