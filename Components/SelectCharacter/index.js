@@ -27,7 +27,7 @@ const SelectCharacter = ({setCharacterNFT}) => {
                 </div>
                 <img 
                     className='hover:cursor-pointer drop-shadow-lg'
-                    src={character.imageURI}  
+                    src={`https://nftstorage.link/ipfs/${character.imageURI}`}  
                     alt={character.name} />
                 <button
                     data-theme="dark"
@@ -79,7 +79,7 @@ onClick={()=> mintCharacterNFTAction(index)}
                 }}>
                     <img 
                         className='hover:cursor-pointer drop-shadow-lg'
-                        src={character.imageURI}  
+                        src={`https://nftstorage.link/ipfs/${character.imageURI}`}  
                         alt={character.name} />
                 </button>
             </div>

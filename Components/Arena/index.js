@@ -7,6 +7,7 @@ import LoadingIndicator from '../LoadingIndicator';
 import useSound from 'use-sound';
 import battleSound from '../../sounds/battleSound.mp3';
 import attackSound from '../../sounds/attackSound.mp3';
+import { list } from 'postcss';
 
 const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
     const [gameContract, setGameContract] = useState(null);
@@ -15,19 +16,27 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
     const [playAttackSound] = useSound(attackSound,{
             volume: 0.035
         });
-    const [playBattleSound] = useSound(battleSound, {
-            volume: 0.035
-        });
-    let animation = {
-        attacking: "animate-spin",
-        attacked: ""
-    }
+    const [listOfAllNftHolders, setListOfAllNftHolders] = useState([]);
+    // const [playBattleSound] = useSound(battleSound, {
+    //         volume: 0.035
+    //     });
+    // let animation = {
+    //     attacking: "animate-spin",
+    //     attacked: ""
+    // }
 
     /*
     * We are going to use this to add a bit of fancy animations during attacks
     */
     const [attackState, setAttackState] = useState('');
 
+    // const renderLeaderBoards = () => {
+    //     listOfAllNftHolders.map( (nftHolder, index) => {
+    //         <div>
+                
+    //         </div>
+    //     });
+    // }
     const fetchCharacterNftDisplayData = () => {
         return (
             <div className="flex flex-col p-10">
@@ -39,7 +48,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                         <h2 className='text-black font-semibold text-2xl p-2 place-self-center'>{characterNFT.name}</h2>
                         <figure>
                             <img 
-                                src={characterNFT.imageURI} 
+                                src={`https://nftstorage.link/ipfs/${characterNFT.imageURI}`}  
                                 alt={`Character ${characterNFT.name}`} 
                                 />
                         </figure>
@@ -61,7 +70,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                         <h1 className='text-black font-bold p-2 text-2xl place-self-center'>🔥 {boss.name} 🔥</h1>
                         <figure>
                             <img 
-                                src={boss.imageURI} 
+                                src={`https://nftstorage.link/ipfs/${boss.imageURI}`}  
                                 alt={`Boss ${boss.name}`} 
                                 />
                         </figure>
@@ -104,6 +113,10 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         const fetchHeroes = async () => {
             try{
                 let nftHolders = await gameContract.nftHolders("0x93DF3b6bF8fAA16502f2766cE6C6881be2A82f7B");
+                // const listOfAllNftHoldersTemp = await gameContract.getAllPlayers();
+                // setListOfAllNftHolders(listOfAllNftHoldersTemp);
+
+                // console.log("listOfAllNftHolders", listOfAllNftHolders);
                 console.log(nftHolders);
             }
             catch(error){
@@ -141,7 +154,14 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             console.log("Boss data: ", boss);
             setBoss(boss);
         };
-
+        // const onCriticalHit = () => {
+        //     setBoss((prevState) => {
+        //         return { ...prevState, hp: bossHp };
+        //     });
+        //     setCharacterNFT((prevState) => {
+        //         return { ...prevState, hp: playerHp };
+        //     });
+        // }
         const onAttackComplete = (from, newBossHp, newPlayerHp) => {
             const bossHp = newBossHp.toNumber();
             const playerHp = newPlayerHp.toNumber();
@@ -174,6 +194,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             
             fetchBoss();
             gameContract.on('AttackComplete', onAttackComplete);
+            // gameContract.on('CriticalHit', onCriticalHit);
         }
 
         /*
@@ -182,6 +203,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         return () => {
             if (gameContract) {
                 gameContract.off('AttackComplete', onAttackComplete);
+                // gameContract.off('CriticalHit', onCriticalHit);
             }
         };
     }, [gameContract]);
@@ -227,11 +249,13 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             </div>         
             <div className='flex flex-col w-[40vw] font-bold text-3xl text-black justify-center items-center p-5 mr-10'>
                 <div>
-                    Leaderboards
+                    Leaderboards (WIP)
                 </div>
-                <div>
-                    Coming up soon.
-                </div>
+                {/* {listOfAllNftHolders.length>0 && 
+                    <div>
+                        {renderLeaderBoards()}
+                    </div>
+                } */}
             </div>
         </div>
     );

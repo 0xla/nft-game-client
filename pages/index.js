@@ -5,7 +5,7 @@ import { CONTRACT_ADDRESS, transformCharacterData } from '../constants';
 
 import myEpicGame from '../utils/MyEpicGame.json';
 import { ethers } from 'ethers';
-import Router from 'next/router'
+import {useRouter} from 'next/router'
 
 import LoadingIndicator from '../Components/LoadingIndicator';
 
@@ -15,10 +15,10 @@ import Link from 'next/link'
 
 const Main = () => {
   const [currentAccount, setCurrentAccount] = useState(null);
-  const [currentNetwork, setCurrentNetwork] = useState(-1);
+  const [currentNetwork, setCurrentNetwork] = useState("-1");
   const [characterNFT, setCharacterNFT] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  // const router = useRouter()
+  const router = useRouter()
 
   // Actions
  
@@ -91,6 +91,7 @@ const renderContent = () => {
 
   if (!currentAccount) {
     console.log("characterNFT", characterNFT);
+    console.log("Current Network", currentNetwork);
     return (<>
           <div
           className="bg-white h-screen overflow-y-auto flex md:flex-row flex-col "
@@ -120,9 +121,9 @@ const renderContent = () => {
     /*
      * Scenario #2
      */
-  } else if (currentAccount && currentNetwork === 4 && !characterNFT ) {
+  } else if (currentAccount && currentNetwork === "4" && !characterNFT ) {
     return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
-  } else if (currentAccount && currentNetwork === 4 && characterNFT) {
+  } else if (currentAccount && currentNetwork === "4" && characterNFT) {
     return <Arena characterNFT={characterNFT} setCharacterNFT={setCharacterNFT} currentAccount={currentAccount} />;
   }
 };
@@ -140,30 +141,31 @@ const renderContent = () => {
   //   }
   // }, [currentAccount]);
 
-  useEffect(() => {
-    const checkNetwork = () => {
-      try { 
-        console.log("checking, netword Id ", currentNetwork)
-          while(window.ethereum.networkVersion !== "4"){
-                alert("Please connect to Rinkeby!");
-                setCurrentNetwork(window.ethereum.networkVersion);
-          }
-          setCurrentNetwork(4);
-      } catch(error) {
-        console.log(error)
-      }
-    }
-  }, [currentNetwork]);
+  // useEffect(() => {
+  //   const checkNetwork = () => {
+  //     try { 
+  //       console.log("checking, netword Id ", currentNetwork)
+  //         while(window.ethereum.networkVersion !== "4"){
+  //               alert("Please connect to Rinkeby!");
+  //               setCurrentNetwork(window.ethereum.networkVersion);
+  //         }
+  //         setCurrentNetwork(4);
+  //     } catch(error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // }, [currentNetwork]);
 
   useEffect(() => {
     const checkNetwork = () => {
       try { 
-        console.log("checking, netword Id ", window.ethereum.networkVersion)
-          while(window.ethereum.networkVersion !== "4"){
-                alert("Please connect to Rinkeby!");
-                Router.reload(window.location.pathname);
-          } 
-          setCurrentNetwork(4);
+        console.log("checking, netword Id ", window.ethereum.networkVersion);
+        console.log("checking, netword Id ", typeof window.ethereum.networkVersion);
+        console.log("checking, currentNetwork ", currentNetwork);
+        if(window.ethereum.networkVersion !== "4"){
+            alert("Please connect to Rinkeby!");
+            router.reload(window.location.pathname);
+        }
       } catch(error) {
         console.log(error)
       }
@@ -194,10 +196,14 @@ const renderContent = () => {
     if (currentAccount){
       setCurrentNetwork(window.ethereum.networkVersion);
       console.log('Current Account: ', currentAccount);
+      console.log('Current window.ethereum.networkVersionrk: ', window.ethereum.networkVersion);
+      console.log('Current Network: ', currentNetwork);
       checkNetwork();
-      fetchNFTMetadata();
+      if(currentNetwork === "4"){
+          fetchNFTMetadata();
+      }
     }
-  }, [currentAccount]);
+}, [currentAccount, router]);
 
   return (
         <div className="min-h-screen">
