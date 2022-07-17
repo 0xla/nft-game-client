@@ -90,8 +90,6 @@ const renderContent = () => {
   }
 
   if (!currentAccount) {
-    console.log("characterNFT", characterNFT);
-    console.log("Current Network", currentNetwork);
     return (<>
           <div
           className="bg-white h-screen overflow-y-auto flex md:flex-row flex-col "
@@ -158,10 +156,7 @@ const renderContent = () => {
 
   useEffect(() => {
     const checkNetwork = () => {
-      try { 
-        console.log("checking, netword Id ", window.ethereum.networkVersion);
-        console.log("checking, netword Id ", typeof window.ethereum.networkVersion);
-        console.log("checking, currentNetwork ", currentNetwork);
+      try {
         if(window.ethereum.networkVersion !== "4"){
             alert("Please connect to Rinkeby!");
             router.reload(window.location.pathname);
@@ -195,13 +190,10 @@ const renderContent = () => {
 
     if (currentAccount){
       setCurrentNetwork(window.ethereum.networkVersion);
-      console.log('Current Account: ', currentAccount);
-      console.log('Current window.ethereum.networkVersionrk: ', window.ethereum.networkVersion);
-      console.log('Current Network: ', currentNetwork);
       checkNetwork();
-      if(currentNetwork === "4"){
+      // if(currentNetwork === "4"){
           fetchNFTMetadata();
-      }
+      
     }
 }, [currentAccount, router]);
 

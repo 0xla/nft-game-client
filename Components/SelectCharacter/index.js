@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { CONTRACT_ADDRESS, transformCharacterData } from '../../constants';
 import myEpicGame from '../../utils/MyEpicGame.json';
 
@@ -19,14 +19,14 @@ const SelectCharacter = ({setCharacterNFT}) => {
     })
     //  border-[0.5px] border-solid border-white
     const displayCharacter = (character) => {
-        console.log("inside displayCharacter");
+        const damageBar = (character.attackDamage * 0.5) + "%";
         return ( 
             <div className='flex flex-col btn-ghost'>
                 <div className="text-white text-xl font-bold text-center p-1">
                     {character.name}
                 </div>
                 <img 
-                    className='hover:cursor-pointer drop-shadow-lg'
+                    className='hover:cursor-pointer drop-shadow-lg h-[60%] w-[100%] object-cover object-center'
                     src={`https://nftstorage.link/ipfs/${character.imageURI}`}  
                     alt={character.name} />
                 <button
@@ -39,6 +39,19 @@ const SelectCharacter = ({setCharacterNFT}) => {
                     >
                     {`Mint ${character.name}`}
                 </button>
+                <div className='flex flex-col my-3'>
+                    <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                        <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: damageBar}}></div>
+                    </div>
+                    <div className='flex font-bold justify-between'>
+                            <div>
+                                Attack Damage
+                            </div>
+                            <div>
+                                {character.attackDamage}
+                            </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -78,7 +91,7 @@ onClick={()=> mintCharacterNFTAction(index)}
                     setCharIndex(index);
                 }}>
                     <img 
-                        className='hover:cursor-pointer drop-shadow-lg'
+                        className='hover:cursor-pointer drop-shadow-lg h-28 w-28 object-cover object-top'
                         src={`https://nftstorage.link/ipfs/${character.imageURI}`}  
                         alt={character.name} />
                 </button>
