@@ -92,7 +92,7 @@ const renderContent = () => {
   if (!currentAccount) {
     return (<>
           <div
-          className="bg-white h-screen overflow-y-auto flex md:flex-row flex-col "
+          className="bg-white h-screen overflow-y-auto flex md:flex-row flex-col md:justify-center items-center "
           >
             <div className='flex flex-col p-[5vw] lg:w-auto items-center md:justify-center'>
               <span className='text-black flex flex-wrap p-4 text-xl font-bold text-center'>Protect the Marvel Universe against Goku!</span>  

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, {useState, useEffect} from 'react';
 import myEpicGame from '../../utils/MyEpicGame.json'; // smart contract im interacting with (need the abi)
 import { ethers } from 'ethers'; //  cuz im interacting with the smart contract
@@ -12,33 +13,49 @@ import { list } from 'postcss';
 const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
     const [gameContract, setGameContract] = useState(null);
     const [boss, setBoss] = useState(null);
+    const [playersDamageData, setPlayersDamageData] = useState([]);
+    const [attackState, setAttackState] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [playAttackSound] = useSound(attackSound,{
-            volume: 0.035
-        });
-    const [listOfAllNftHolders, setListOfAllNftHolders] = useState([]);
-    // const [playBattleSound] = useSound(battleSound, {
-    //         volume: 0.035
-    //     });
-    // let animation = {
-    //     attacking: "animate-spin",
-    //     attacked: ""
-    // }
+        volume: 0.035
+    });
 
-    /*
-    * We are going to use this to add a bit of fancy animations during attacks
-    */
-    const [attackState, setAttackState] = useState('');
-
-    // const renderLeaderBoards = () => {
-    //     listOfAllNftHolders.map( (nftHolder, index) => {
-    //         <div>
-                
-    //         </div>
-    //     });
-    // }
+    const renderLeaderBoards = () => {
+        console.log("inside renderLeaderboards");
+        console.log(playersDamageData);
+        let c=0;
+        return (<table className='table w-full m-5' data-theme="light">
+                <thead>
+                    <tr>
+                        <th>
+                            S. No.
+                        </th>
+                        <th>
+                            Wallet Address
+                        </th>
+                        <th>Total Damage</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    {
+                    playersDamageData.map((item) => {
+                        return (<tr key={item.playerAddress}>
+                            <th className='font-normal'>{++c}</th>
+                            <th className='font-normal'>{item.playerAddress}</th>
+                            <th className='font-normal'>{item.playerTotalDamage}</th>
+                        </tr>)
+                    })
+                }
+                </tbody>
+        </table>)
+    }
     const fetchCharacterNftDisplayData = () => {
+        let visibility = "invisible";
+        if(characterNFT.hp === 0){
+            visibility="visilbe"
+        }
         return (
+        <div className='flex flex-col items-center'>
             <div className="flex lg:flex-row flex-col p-10">
                 <div className="card glass h-fit w-full shadow-xl flex flex-col">
                     {/* <h2 className='text-black text-2xl place-self-center'>Your Character</h2> */}
@@ -62,7 +79,15 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                             >{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
                         </div>
                 </div>
-            </div>);
+            </div>
+            <button 
+                className={`${visibility} btn btn-outline md:w-[60%] w-auto`} 
+                data-theme="light"
+                onClick={() => setCharacterNFT(undefined)}>
+                Mint a new character
+            </button>
+        </div>
+        );
     }
     const fetchBossNftDisplayData = () => {
         return (<div className="flex lg:flex-row flex-col p-10">
@@ -113,10 +138,6 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         const fetchHeroes = async () => {
             try{
                 let nftHolders = await gameContract.nftHolders("0x93DF3b6bF8fAA16502f2766cE6C6881be2A82f7B");
-                // const listOfAllNftHoldersTemp = await gameContract.getAllPlayers();
-                // setListOfAllNftHolders(listOfAllNftHoldersTemp);
-                // console.log("listOfAllNftHolders", listOfAllNftHolders);
-                console.log(nftHolders);
             }
             catch(error){
                 console.log("error fetching nftHolders from smart contract", error);
@@ -138,14 +159,10 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                 signer
             );
             setGameContract(gameContract);
-            console.log(gameContract);
         } else {
             console.log('Ethereum object not found');
         }
     }, []);
-    // useEffect( () => {
-    //     playBattleSound();
-    // });
     useEffect( () => {
         const fetchBoss = async () => {
             const bossTxn = await gameContract.getBigBoss();
@@ -161,6 +178,32 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         //         return { ...prevState, hp: playerHp };
         //     });
         // }
+
+        const getAllPlayersData = async () => {
+            try{
+                let tempPlayersDamageData = [];
+                let allPlayers = await gameContract.getAllPlayers();
+                for(let i=0; i < allPlayers.length; i++) {
+                    const playerAddress = allPlayers[i];
+                    const playerAttackDamage = await gameContract.totalAttackDamage(playerAddress);
+                    console.log("playerAddress", allPlayers[i]);
+                    console.log("playerTotalDamage", playerAttackDamage.toNumber());
+                    tempPlayersDamageData.push({
+                        playerAddress: playerAddress,
+                        playerTotalDamage: playerAttackDamage.toNumber()
+                    })
+                }
+                console.log("All players", allPlayers);
+                setPlayersDamageData(tempPlayersDamageData);
+                console.log("playersDamageData", playersDamageData);
+                
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+
+
         const onAttackComplete = (from, newBossHp, newPlayerHp) => {
             const bossHp = newBossHp.toNumber();
             const playerHp = newPlayerHp.toNumber();
@@ -171,6 +214,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             /*
             * If player is our own, update both player and boss Hp
             */
+            getAllPlayersData();
             if (currentAccount === sender.toLowerCase()) {
               setBoss((prevState) => {
                   return { ...prevState, hp: bossHp };
@@ -190,8 +234,8 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         }
 
         if (gameContract) {
-            
             fetchBoss();
+            getAllPlayersData();
             gameContract.on('AttackComplete', onAttackComplete);
             // gameContract.on('CriticalHit', onCriticalHit);
         }
@@ -206,6 +250,12 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
             }
         };
     }, [gameContract]);
+
+    useEffect(()=>{
+        if(characterNFT.hp === 0){
+            
+        }
+    });
 
 
     return (
@@ -248,15 +298,13 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                 </div>
 
                 </div>         
-                <div className='flex flex-col w-[40vw] font-bold text-3xl text-black justify-center items-center p-5 mr-10'>
-                    <div>
+                <div className='flex flex-col justify-center items-center p-5 mr-10'>
+                    <div className='font-bold text-3xl text-black'>
                         Leaderboards (WIP)
                     </div>
-                    {/* {listOfAllNftHolders.length>0 && 
-                        <div>
-                            {renderLeaderBoards()}
-                        </div>
-                    } */}
+                    {playersDamageData && playersDamageData.length > 0 && 
+                            renderLeaderBoards()
+                    }
                 </div>
             </div>
         </div>
