@@ -8,6 +8,9 @@ import LoadingIndicator from '../LoadingIndicator';
 import useSound from 'use-sound';
 import thunderSound from '../../sounds/thunderSoundEffect.mp3';
 
+import {AiOutlineQuestionCircle} from 'react-icons/ai';
+import Link from 'next/link'
+
 const SelectCharacter = ({setCharacterNFT}) => {
     const [character, setCharacter] = useState(null);
     const [charIndex, setCharIndex]  = useState(-1);
@@ -20,18 +23,19 @@ const SelectCharacter = ({setCharacterNFT}) => {
     //  border-[0.5px] border-solid border-white
     const displayCharacter = (character) => {
         const damageBar = (character.attackDamage * 0.5) + "%";
+        const hpBar = (character.maxHp * 100/3000) + "%";
         return ( 
-            <div className='flex flex-col btn-ghost'>
-                <div className="text-white text-xl font-bold text-center p-1">
+            <div className='flex flex-col btn-ghost gap-1 m-2'>
+                <div className="text-white text-xl font-bold text-center">
                     {character.name}
                 </div>
                 <img 
-                    className='hover:cursor-pointer drop-shadow-lg h-[60%] w-[100%] object-cover object-center'
+                    className='hover:cursor-pointer drop-shadow-lg md:h-[30vw] md:w-[30vw] object-cover object-top'
                     src={`https://nftstorage.link/ipfs/${character.imageURI}`}  
                     alt={character.name} />
                 <button
                     data-theme="dark"
-                    className="btn btn-active btn-ghost"
+                    className="btn btn-active text-white btn-ghost"
                     onClick={()=> {
                         mintCharacterNFTAction(charIndex);
                         playSound();
@@ -39,17 +43,41 @@ const SelectCharacter = ({setCharacterNFT}) => {
                     >
                     {`Mint ${character.name}`}
                 </button>
-                <div className='flex flex-col my-3'>
-                    <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
-                        <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: damageBar}}></div>
+                <div className="tooltip self-center" data-tip="Don't have ether ? Click me to get some for free.">
+                    <div className="text-2xl">
+                      <Link href="https://faucets.chain.link/rinkeby">
+                        <a target="_blank"><AiOutlineQuestionCircle /></a>
+                      </Link>
                     </div>
-                    <div className='flex font-bold justify-between'>
+                  </div>
+                <div className='flex flex-col my-3 gap-3'>
+
+                    <div>
+                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                            <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: hpBar}}></div>
+                        </div>
+                        <div className='flex font-bold justify-between'>
+                            <div>
+                                Health
+                            </div>
+                            <div>
+                                {character.maxHp}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                            <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: damageBar}}></div>
+                        </div>
+                        <div className='flex font-bold justify-between'>
                             <div>
                                 Attack Damage
                             </div>
                             <div>
                                 {character.attackDamage}
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -157,15 +185,18 @@ onClick={()=> mintCharacterNFTAction(index)}
 
     return (
         <div className="min-h-screen bg-cover bg-[url('https://wallpaperaccess.com/full/772411.jpg')]">
-            <div className="flex flex-row">
-            <div className='flex flex-col w-[70vw] items-center'>
-                <h1 className='text-3xl p-2 text-white'>
+            <div className="flex md:flex-row flex-col">
+            <div className='flex flex-col md:w-[70vw] items-center'>
+                <h1 className='text-3xl p-2 text-white mt-4'>
                     Mint your hero. Choose wisely. 
                 </h1>
                 {characters.length > 0 && (
-                    <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 p-2'
-                    >
-                        {renderCharacters()}
+                    // <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 p-2'
+                    // >
+                    <div className=''>
+                        <div className='m-10 p-5 flex md:flex-wrap flex-row gap-1 '>
+                            {renderCharacters()}
+                        </div>
                     </div>
                 )}
                 {mintingCharacter && (
@@ -181,10 +212,8 @@ onClick={()=> mintCharacterNFTAction(index)}
                     </div>
                     )}
                 </div>
-                <div className='flex w-[40vw] p-2 justify-center'>
-                    {character && displayCharacter(character)}
-                </div>
-        </div>
+                {character && displayCharacter(character)}
+             </div>
         </div>
     )
 }

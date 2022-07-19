@@ -21,34 +21,42 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
     });
 
     const renderLeaderBoards = () => {
-        console.log("inside renderLeaderboards");
-        console.log(playersDamageData);
+        playersDamageData.sort((a,b) => b.playerTotalDamage - a.playerTotalDamage);
         let c=0;
-        return (<table className='table w-full m-5' data-theme="light">
-                <thead>
+        return (
+            <div className='overflow-x-auto relative m-4'>
+            <table className='mx-auto max-w-4xl w-full whitespace-nowrap rounded-lg bg-white divide-y divide-gray-300 overflow-hidden'>
+                <thead className='text-xs text-gray-700 uppercase bg-gray-50'>
                     <tr>
-                        <th>
+                        <th scope="col" className="py-3 px-6">
                             S. No.
                         </th>
-                        <th>
+                        <th scope="col" className="py-3 px-6">
                             Wallet Address
                         </th>
-                        <th>Total Damage</th>
+                        <th scope="col" className="py-3 px-6">
+                            Total Damage
+                        </th>
                     </tr>
                 </thead>
                 <tbody >
                     {
                     playersDamageData.map((item) => {
-                        return (<tr key={item.playerAddress}>
-                            <th className='font-normal'>{++c}</th>
-                            <th className='font-normal'>{item.playerAddress}</th>
-                            <th className='font-normal'>{item.playerTotalDamage}</th>
+                        return (<tr className="bg-white border-b" key={item.playerAddress}>
+                            <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">{++c}</th>
+                            <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">{item.playerAddress}</th>
+                            <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">{item.playerTotalDamage}</th>
                         </tr>)
                     })
                 }
                 </tbody>
-        </table>)
+            </table>
+        </div>
+        );
     }
+    
+
+    
     const fetchCharacterNftDisplayData = () => {
         let visibility = "invisible";
         if(characterNFT.hp === 0){
@@ -56,10 +64,9 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         }
         return (
         <div className='flex flex-col items-center'>
-            <div className="flex lg:flex-row flex-col p-10">
-                <div className="card glass h-fit w-full shadow-xl flex flex-col">
-                    {/* <h2 className='text-black text-2xl place-self-center'>Your Character</h2> */}
-                        <div className='text-xl p-1 text-black place-self-center border-b-2 border-gray-200'>
+            {/* <div className="flex lg:flex-row flex-col p-1"> */}
+                <div className="card glass h-fit w-[80%] shadow-xl flex flex-col">
+                    <div className='text-xl p-1 text-black place-self-center border-b-2 border-gray-200'>
                             Your Character
                         </div>
                         <h2 className='text-black font-semibold text-2xl p-2 place-self-center'>{characterNFT.name}</h2>
@@ -67,6 +74,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                             <img 
                                 src={`https://nftstorage.link/ipfs/${characterNFT.imageURI}`}  
                                 alt={`Character ${characterNFT.name}`} 
+                                className="md:h-[30vw] h-full w-auto object-cover object-top"
                                 />
                         </figure>
                         <div className="card-actions m-5">
@@ -79,7 +87,7 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                             >{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
                         </div>
                 </div>
-            </div>
+            {/* </div> */}
             <button 
                 className={`${visibility} btn btn-outline md:w-[60%] w-auto`} 
                 data-theme="light"
@@ -90,13 +98,18 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
         );
     }
     const fetchBossNftDisplayData = () => {
-        return (<div className="flex lg:flex-row flex-col p-10">
-                    <div className={`card glass h-fit w-full shadow-xl flex flex-col ${attackState}`}>
+        return (
+        <div className="flex flex-col items-center">
+                    <div className={`card glass h-fit w-[80%] shadow-xl flex flex-col${attackState}`}>
+                        <div className='text-xl p-1 text-black place-self-center border-b-2 border-gray-200'>
+                            Boss
+                        </div>
                         <h1 className='text-black font-bold p-2 text-2xl place-self-center'>🔥 {boss.name} 🔥</h1>
                         <figure>
                             <img 
                                 src={`https://nftstorage.link/ipfs/${boss.imageURI}`}  
                                 alt={`Boss ${boss.name}`} 
+                                className="md:h-[30vw] h-full w-auto object-cover object-top"
                                 />
                         </figure>
                         <div className="card-actions m-5">
@@ -260,9 +273,10 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
 
     return (
         <div className="min-h-screen bg-[url('https://i.pinimg.com/originals/0f/18/c4/0f18c45e07a7212f4d49e71213833e01.jpg')] bg-cover"> 
-            <div className='flex flex-col justify-between'>
-                <div className='font-bold text-black text-3xl place-self-center self-center mt-4'>Battle Arena</div>
-                <div className='flex flex-col w-auto items-center'>
+            <div className='flex flex-col'>
+                <div className='font-bold text-black text-3xl place-self-center self-center m-4'>
+                    Battle Arena</div>
+                <div className='flex flex-col w-auto justify-center items-center'>
                     <div className='grid lg:grid-cols-2 grid-cols-1'>
                         {characterNFT && fetchCharacterNftDisplayData()}
                         {boss && fetchBossNftDisplayData()}
@@ -298,14 +312,14 @@ const Arena = ({characterNFT, setCharacterNFT, currentAccount}) => {
                 </div>
 
                 </div>         
-                <div className='flex flex-col justify-center items-center p-5 mr-10'>
-                    <div className='font-bold text-3xl text-black'>
-                        Leaderboards (WIP)
+                {/* <div className='flex flex-col justify-center items-center'> */}
+                    <div className='font-bold text-3xl text-black self-center m-2'>
+                        Leaderboards
                     </div>
                     {playersDamageData && playersDamageData.length > 0 && 
                             renderLeaderBoards()
                     }
-                </div>
+                {/* </div> */}
             </div>
         </div>
     );
