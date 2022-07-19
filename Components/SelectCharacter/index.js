@@ -43,7 +43,7 @@ const SelectCharacter = ({setCharacterNFT}) => {
                     >
                     {`Mint ${character.name}`}
                 </button>
-                <div className="tooltip self-center" data-tip="Don't have ether ? Click me to get some for free.">
+                <div className="tooltip self-center text-gray-200" data-tip="Don't have ether ? Click me to get some for free.">
                     <div className="text-2xl">
                       <Link href="https://faucets.chain.link/rinkeby">
                         <a target="_blank"><AiOutlineQuestionCircle /></a>
@@ -53,10 +53,10 @@ const SelectCharacter = ({setCharacterNFT}) => {
                 <div className='flex flex-col my-3 gap-3'>
 
                     <div>
-                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5">
                             <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: hpBar}}></div>
                         </div>
-                        <div className='flex font-bold justify-between'>
+                        <div className='flex font-bold justify-between text-gray-200'>
                             <div>
                                 Health
                             </div>
@@ -67,10 +67,10 @@ const SelectCharacter = ({setCharacterNFT}) => {
                     </div>
 
                     <div>
-                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                        <div className="flex w-[100%] bg-gray-200 rounded-full h-2.5">
                             <div className={`bg-blue-600 h-2.5 rounded-full`} style={{width: damageBar}}></div>
                         </div>
-                        <div className='flex font-bold justify-between'>
+                        <div className='flex font-bold justify-between text-gray-200'>
                             <div>
                                 Attack Damage
                             </div>
